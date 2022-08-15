@@ -1,0 +1,18 @@
+{
+  "name": "@jcshop/jc-checkout",
+  "version": "0.0.1",
+  "description": "Webcomponent to interface shop checkout",
+  "author": "appycloud",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "index.js",
+  "scripts": {
+    "start": "wds"
+  },
+  "dependencies": {
+    "lit": "^2.0.2"
+  },
+  "devDependencies": {
+    "@web/dev-server": "^0.1.26"
+  }
+}
