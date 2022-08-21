@@ -80,15 +80,28 @@ class DemoExample extends AwsAuthorization {
             )}
             <tr><td><b>Total</b></td><td><b>$${this.totalPrice}</b></td></tr>
           </table><br />
-          <button @click=${this.checkoutOrder}>Checkout</button>
+          <button id="checkout" @click=${this.checkoutOrder}>Checkout</button>
         </div>
-        <jc-checkout></jc-checkout>
+        <jc-checkout 
+          @dbReady=${()=>this.shadowRoot.querySelector("div#auth").hidden=false}
+          @checkoutResponse=${this.checkoutResponse}>
+        </jc-checkout>
       </div>
     `;
   }
 
+  checkoutResponse(e) {
+    if (e.detail.orderNo) {
+      alert(`Order: ${e.detail.orderNo} created`)
+    } else {
+      alert(`Order failed`)
+    }
+    this.shadowRoot.querySelector("button#checkout").disabled = false;
+  }
+
   checkoutOrder() {
-    this.checkout.data = {accountData: this.accountData, cart: this.cart}
+    this.shadowRoot.querySelector("button#checkout").disabled = true;
+    this.checkout.data = {accountData: this.accountData, cart: this.cart};
   }
 
   get checkout() {
@@ -121,8 +134,11 @@ class DemoExample extends AwsAuthorization {
 
   async authorized() {
     super.authorized();
-    window.AWS = undefined;
-    this.shadowRoot.querySelector("div#auth").hidden = false;
+    // set local AWS config based on the selected project
+    // arg1 = prefix
+    // arg2 = region
+    // arg3 = is cross model?
+    this.checkout.setLocalConfig(this.userPoolName, this.region, true);
   }
 }
 customElements.define('demo-example', DemoExample);

@@ -7,14 +7,26 @@ export class JcCheckout extends DbStream {
     }
   }
 
+  dbStreamReady() {
+    window.AWS = undefined;
+  }
+
   updated(updates) {
+    super.updated(updates);
     if (updates.has('data')) {
       this.dataChanged();
     }
   }
 
   dataChanged() {
-    console.log("data changed")
-    console.log(this.data)
+    this.putItem(this.data).then(msg => {
+      if (msg.indexOf('ok') >= 0) {
+        this.dispatchEvent(new CustomEvent('checkoutResponse', { detail: {
+          orderNo: msg.match("order: (.*) ok")[1].trim()
+        } }));
+      } else {
+        this.dispatchEvent(new CustomEvent('checkoutResponse', { detail: {} }));
+      }
+    });
   }
 }
