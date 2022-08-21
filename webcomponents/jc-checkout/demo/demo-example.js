@@ -139,6 +139,7 @@ class DemoExample extends AwsAuthorization {
     // arg2 = region
     // arg3 = is cross model?
     this.checkout.setLocalConfig(this.userPoolName, this.region, true);
+    this.shadowRoot.querySelector("div#auth").hidden = false;
   }
 }
 customElements.define('demo-example', DemoExample);
