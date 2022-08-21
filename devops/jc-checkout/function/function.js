@@ -35,8 +35,9 @@ exports.handler = async (event) => {
         if (executionMode.runningLocally) {
           console.log('Testing locally, not populating the DB and not sending out the SQS message.');
         } else { // store to AWS and message
+          let orderNo = record.dynamodb.NewImage.SortKey.S.split("_")[1];
           if (procRes) {
-            await sqs.sendMessage('Process '+ record.dynamodb.NewImage.SortKey.S +' ok');
+            await sqs.sendMessage('Process order: '+ orderNo +' ok');
           } else {
             // delete the dynamodb item
             let params = {
@@ -47,7 +48,7 @@ exports.handler = async (event) => {
               }
             }
             await dynamodb.delete(params).promise();
-            await sqs.sendMessage('Process '+ record.dynamodb.NewImage.SortKey.S +' failed');
+            await sqs.sendMessage('Process order: '+ orderNo +' failed');
           }
         }
       }

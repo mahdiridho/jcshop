@@ -8,7 +8,7 @@ class CustomCode {
    */
   constructor(record){
     console.log('CustomCode : constructed for record.eventName='+record.eventName)
-    this.orderData = record;
+    this.orderData = record.dynamodb.NewImage;
   }
 
   /**
@@ -19,28 +19,33 @@ class CustomCode {
     /* Put your code here to process the data */
     try {
       let responseBody = await new Promise((resolve, reject) => {
-        if (!this.orderData.chId) {
-          console.log(("Required Channel ID"))
-          return reject({code: "AccessDenied", message: "Required Channel ID"})
-        }
-        let accountData = this.orderData.accountData;
+        let orderNo = this.orderData.SortKey.S.split("_")[1];
+        let accountData = this.orderData.accountData.M;
         let chunks = [];
         let newOrder = 'New Order\n';
         newOrder += '-------------\n';
+        newOrder += `Order ID: ${orderNo}\n`;
         // populating customer info
-        for (const [key, value] of Object.entries(accountData)) {
-          newOrder += `${key}: ${value}\n`
+        for (let [key] of Object.entries(accountData)) {
+          for (let [type, value] of Object.entries(accountData[key])) {
+            newOrder += `${key}: ${value}\n`
+          }
         }
         // populating shop cart
-        newOrder += `> Cart:\n`
-        let cart = this.orderData.cart;
+        newOrder += `\n> Cart:\n`
+        let cart = this.orderData.cart.L;
         let itemData = '';
         cart.forEach(item => {
-          for (let [key, value] of Object.entries(item)) {
-            if (key == 'item') {
-              value = value.replace(/\+/g,' ');
+          for (let [key] of Object.entries(item.M)) {
+            for (let [type, value] of Object.entries(item.M[key])) {
+              if (key == 'price') {
+                value = `@$${value}`;
+              }
+              if (key == 'item') {
+                value = value.replace(/\+/g,' ');
+              }
+              itemData += `${key}: ${value} `;
             }
-            itemData += `${key}: ${value} `;
           }
           itemData += `;\n`;
         })
