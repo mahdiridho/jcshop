@@ -1,0 +1,33 @@
+{
+  "eventID": "247a78ee33d8a7b7690af4ffab707030",
+  "eventName": "INSERT",
+  "eventVersion": "1.1",
+  "eventSource": "aws:dynamodb",
+  "awsRegion": "<region>",
+  "dynamodb": {
+      "ApproximateCreationDateTime": 1622009014,
+      "Keys": {
+          "LeadingKey": {
+              "S": ""
+          },
+          "SortKey": {
+              "S": ""
+          }
+      },
+      "NewImage": {
+          "LeadingKey": {
+              "S": ""
+          },
+          "data": {
+              "S": ""
+          },
+          "SortKey": {
+              "S": ""
+          }
+      },
+      "SequenceNumber": "200000000037250566138",
+      "SizeBytes": 53,
+      "StreamViewType": "NEW_AND_OLD_IMAGES"
+  },
+  "eventSourceARN": "arn:aws:dynamodb:<region>:<profileID>:table/<prefix>_dynDB/stream/2021-05-26T05:58:36.823"
+}
